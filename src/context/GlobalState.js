@@ -1,30 +1,40 @@
-import React, { createContext, useReducer, useEffect, useState } from "react";
-// import AppReducer from './AppReducer'
-import axios from "axios";
+import React, { createContext, useReducer, useEffect, useState } from 'react';
+import AppReducer from './AppReducer';
+import axios from 'axios';
 
 const initialState = {
   allData: [],
+  isLoading: false,
+  isError: false,
 };
 
 export const GlobalContext = createContext();
 
 export const GlobalProvider = (props) => {
-//   const [state] = useReducer(initialState);
-const [datam, setDatam] = useState([])
+  const [state, dispatch] = useReducer(AppReducer, initialState);
 
   useEffect(() => {
-      console.log("amk");
-    getData();
+    const fetchData = async () => {
+      dispatch({ type: 'ERROR_HANDLE', payload: false });
+      dispatch({ type: 'LOADING_HANDLE', payload: true });
+
+      try {
+        const result = await axios(
+          'https://jsonplaceholder.typicode.com/users'
+        );
+        dispatch({ type: 'GET_ALL_INITIAL_DATA', payload: result.data });
+      } catch (error) {
+        dispatch({ type: 'ERROR_HANDLE', payload: true });
+      }
+
+      dispatch({ type: 'LOADING_HANDLE', payload: false });
+    };
+
+    fetchData();
   }, []);
 
-  const getData = () => {
-    axios
-      .get("https://jsonplaceholder.typicode.com/users")
-      .then((response) => setDatam(arr => [...arr, response.data]))
-  }
-
   return (
-    <GlobalContext.Provider value={{ allData: initialState.allData, datam}}>
+    <GlobalContext.Provider value={{ state: state }}>
       {props.children}
     </GlobalContext.Provider>
   );

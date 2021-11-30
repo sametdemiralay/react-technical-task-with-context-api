@@ -1,18 +1,25 @@
-import React,{useContext} from 'react'
-import {GlobalContext} from '../context/GlobalState'
+import React, { useContext } from 'react';
+import { GlobalContext } from '../context/GlobalState';
 
 const Example = () => {
-    const {datam} = useContext(GlobalContext)
+  const { state } = useContext(GlobalContext);
 
-    console.log("datam", datam);
-    return (
-        <div>
-            <h3>baslik</h3>
-            {datam.map(val => (
-                <p>- {val}</p>
-            ))}
-        </div>
-    )
-}
+  return (
+    <div>
+      {state.isError ? (
+        <p>Error...</p>
+      ) : state.isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+          <h3>baslik</h3>
+          {state.allData.map((item) => (
+            <p key={item.id}>- {item.name}</p>
+          ))}
+        </>
+      )}
+    </div>
+  );
+};
 
-export default Example
+export default Example;
