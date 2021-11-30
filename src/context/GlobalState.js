@@ -8,6 +8,8 @@ const initialState = {
   isError: false,
 };
 
+const DATA_URL = 'https://jsonplaceholder.typicode.com/posts'
+
 export const GlobalContext = createContext();
 
 export const GlobalProvider = (props) => {
@@ -19,9 +21,7 @@ export const GlobalProvider = (props) => {
       dispatch({ type: 'LOADING_HANDLE', payload: true });
 
       try {
-        const result = await axios(
-          'https://jsonplaceholder.typicode.com/users'
-        );
+        const result = await axios(DATA_URL);
         dispatch({ type: 'GET_ALL_INITIAL_DATA', payload: result.data });
       } catch (error) {
         dispatch({ type: 'ERROR_HANDLE', payload: true });
@@ -33,9 +33,20 @@ export const GlobalProvider = (props) => {
     fetchData();
   }, []);
 
+  // actions
+  const createPost = (postt) => {
+    // axios.post(DATA_URL, postt)
+    console.log("selam mk", postt);
+    // dispatch({ type: "CREATE_POST", payload: postt });
+  };
+
   return (
-    <GlobalContext.Provider value={{ state: state }}>
+    <GlobalContext.Provider value={{ state: state, createPost }}>
       {props.children}
     </GlobalContext.Provider>
   );
 };
+
+
+// const article = { title: 'React PUT Request Example' };
+//     axios.put('https://reqres.in/api/articles/1', article)
