@@ -13,8 +13,10 @@ const initialState = {
   allData: [],
 };
 
-// const DATA_URL = 'https://jsonplaceholder.typicode.com/posts'
-const DATA_URL = 'https://jsonplaceholder.typicode.com/posts?_start=10&_end=40'
+// const DATA_URL = "https://my-json-server.typicode.com/sametdemiralay/demo/books"
+
+const DATA_URL = 'https://jsonplaceholder.typicode.com/posts'
+// const DATA_URL = 'https://jsonplaceholder.typicode.com/posts?_start=10&_end=40'
 
 // export const GlobalContext = createContext();
 export const GlobalContext = createContext(initialState);
@@ -23,20 +25,6 @@ export const GlobalProvider = (props) => {
   const [state, dispatch] = useReducer(AppReducer, initialState);
 
   useEffect(() => {
-    // const fetchData = async () => {
-    //   dispatch({ type: 'ERROR_HANDLE', payload: false });
-    //   dispatch({ type: 'LOADING_HANDLE', payload: true });
-
-    //   try {
-    //     const result = await axios(DATA_URL);
-    //     dispatch({ type: 'GET_ALL_INITIAL_DATA', payload: result.data });
-    //   } catch (error) {
-    //     dispatch({ type: 'ERROR_HANDLE', payload: true });
-    //   }
-
-    //   dispatch({ type: 'LOADING_HANDLE', payload: false });
-    // };
-
     fetchData();
   }, []);
 
@@ -48,25 +36,35 @@ export const GlobalProvider = (props) => {
     })
     .catch((error) => {
       dispatch({ type: "GET_DATA_ERROR" });
+      console.log("hata---", error);
     });
   }
 
   // post / create
-  const postData = (item) => {
-    axios.post(DATA_URL, item).then(postItem => {
+  const postData = async(item) => {
+    await axios.post(DATA_URL, item).then(postItem => {
       console.log("----",postItem.data)
       dispatch({ type: "ADD", payload: postItem.data });
     });
   };
-
-  const createPost = (postt) => {
-    // axios.post(DATA_URL, postt)
-    console.log("selam mk", postt);
-    // dispatch({ type: "CREATE_POST", payload: postt });
+  // delete
+  const deleteData = (id) => {
+    axios.delete(`${DATA_URL}/${id}`).then(deleteItem => {
+      console.log("--delete--",deleteItem)
+      // dispatch({ type: "ADD", payload: deleteItem });
+    });
+  };
+  // put / update
+  const UpdateData = async(id,updateItem) => {
+    await axios.put(`${DATA_URL}/${id}`, updateItem).then(res => {
+      console.log("guncel", res.data);
+      dispatch({ type: "UPDATE", payload: {data:res.data, id:id} });
+    });
   };
 
+
   return (
-    <GlobalContext.Provider value={{ state: state, createPost, fetchData, postData }}>
+    <GlobalContext.Provider value={{ state: state, fetchData, postData, deleteData, UpdateData }}>
       {props.children}
     </GlobalContext.Provider>
   );

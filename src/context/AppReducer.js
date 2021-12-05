@@ -38,8 +38,15 @@ const AppReducer = (state, action) => {
       case "ADD":
         return {
           ...state,
-          allData: [...state.allData, action.payload]
+          // allData: [...state.allData, action.payload]
+          allData: [action.payload, ...state.allData]
         };
+        case "UPDATE":
+          return {
+            ...state,
+            // allData: [...state.allData, action.payload]
+            // allData: state.allData.map(val => val.id === action.id)
+          };
     default:
       return state;
   }

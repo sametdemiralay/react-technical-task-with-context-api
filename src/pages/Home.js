@@ -1,29 +1,33 @@
-import React, {useContext, useEffect} from 'react'
-import {Link} from 'react-router-dom'
-import { GlobalContext } from '../context/GlobalState';
+import React, { useContext, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { GlobalContext } from "../context/GlobalState";
+import HomeCardItem from '../components/HomeCardItem'
 
 const Home = () => {
-    const { state, fetchData } = useContext(GlobalContext);
+  const { state } = useContext(GlobalContext);
 
-    // useEffect(()=> {
-    //     fetchData()
-    // },[])
+  // useEffect(()=> {
+  //     fetchData()
+  // },[])
 
-    console.log("selam-", state);
+  console.log("selam-", state);
 
-    return (
-        <div>
-            <h3>HOME</h3>
-            <Link to="/user/2">Go to id 2</Link>
+  return (
+    <div>
+      <h3>HOME</h3>
+      <Link to="/user/2">Go to id 2</Link>
 
-            <ul>
-            {state.allData.map(itm => (
-                <li key={itm.id}>{itm.title}</li>
-            ))}
-            </ul>
-            
-        </div>
-    )
-}
+    <HomeCardItem />
 
-export default Home
+      <ul>
+        {state.error ? (
+          <li>no data</li>
+        ) : (
+          state.allData.map((itm) => <li key={itm.id}>{itm.title}</li>)
+        )}
+      </ul>
+    </div>
+  );
+};
+
+export default Home;
